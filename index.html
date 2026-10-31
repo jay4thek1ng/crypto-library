@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Crypto White Paper Library</title>
+<meta name="description" content="An offline library of 88 crypto white papers, yellow papers and protocol specs.">
+<meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="WP Library">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/favicon-64.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <div class="title-row">
+      <h1>Library</h1>
+      <span id="count" class="count"></span>
+    </div>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" placeholder="Search titles, projects, tickers, authors" autocomplete="off" aria-label="Search">
+    </div>
+    <div class="controls">
+      <select id="shelf" aria-label="Shelf"></select>
+      <div class="seg" role="tablist" aria-label="Sort">
+        <button data-sort="year" class="on">Newest</button>
+        <button data-sort="title">Title</button>
+        <button data-sort="project">Project</button>
+      </div>
+      <label class="chip"><input type="checkbox" id="wantOnly"> Want to Read only</label>
+      <label class="chip"><input type="checkbox" id="localOnly"> Offline copies only</label>
+    </div>
+  </div>
+</header>
+
+<main id="main"></main>
+
+<footer class="foot">
+  <p id="offlineNote"></p>
+  <p><button id="cacheAll" class="link-btn" hidden>Save every paper for offline use</button> <span id="cacheStatus"></span></p>
+  <p class="muted">Metadata from each project's official source. Papers marked "Offline" are bundled with this app; others open the official page.</p>
+</footer>
+
+<div id="sheet" class="sheet" hidden aria-modal="true" role="dialog">
+  <div class="sheet-backdrop" data-close></div>
+  <div class="sheet-card" role="document">
+    <button class="sheet-close" data-close aria-label="Close">×</button>
+    <div id="sheetBody"></div>
+  </div>
+</div>
+
+<div id="reader" class="reader" hidden role="dialog" aria-modal="true">
+  <div class="reader-bar">
+    <button id="readerBack" class="bar-btn">‹ Library</button>
+    <div id="readerTitle" class="reader-title"></div>
+    <a id="readerNewTab" class="bar-btn" target="_blank" rel="noopener">Open in new tab</a>
+  </div>
+  <iframe id="readerFrame" title="Paper reader"></iframe>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
