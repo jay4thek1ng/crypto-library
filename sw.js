@@ -1,23 +1,31 @@
 importScripts("precache-list.js");
-var SHELL = "wp-shell-v1", FILES = "wp-files-v1";
+// v2: illustrated covers. FILES cache name kept at v1 on purpose so users keep their downloaded PDFs.
+var SHELL = "wp-shell-v2", FILES = "wp-files-v1", COVERS = "wp-covers-v2";
 var SHELL_FILES = ["./", "index.html", "styles.css", "app.js", "data.js", "manifest.json", "precache-list.js",
   "icons/icon-192.png", "icons/icon-512.png", "icons/maskable-512.png", "icons/apple-touch-icon.png", "icons/favicon-64.png"];
 self.addEventListener("install", function (e) {
-  e.waitUntil(caches.open(SHELL).then(function (c) { return c.addAll(SHELL_FILES); }).then(function () { return self.skipWaiting(); }));
+  e.waitUntil(caches.open(SHELL).then(function (c) { return c.addAll(SHELL_FILES); })
+    .then(function () {
+      // precache all cover images; a single failure must not break install (CSS cover is the fallback)
+      return caches.open(COVERS).then(function (c) {
+        return Promise.all((self.COVER_FILES || []).map(function (u) { return c.add(u).catch(function () {}); }));
+      });
+    })
+    .then(function () { return self.skipWaiting(); }));
 });
 self.addEventListener("activate", function (e) {
-  e.waitUntil(caches.keys().then(function (ks) { return Promise.all(ks.filter(function (k) { return k !== SHELL && k !== FILES; }).map(function (k) { return caches.delete(k); })); }).then(function () { return self.clients.claim(); }));
+  e.waitUntil(caches.keys().then(function (ks) { return Promise.all(ks.filter(function (k) { return k !== SHELL && k !== FILES && k !== COVERS; }).map(function (k) { return caches.delete(k); })); }).then(function () { return self.clients.claim(); }));
 });
 self.addEventListener("fetch", function (e) {
   var req = e.request;
   if (req.method !== "GET" || new URL(req.url).origin !== location.origin) return;
-  var isFile = req.url.indexOf("/library/") >= 0;
+  var isFile = req.url.indexOf("/library/") >= 0, isCover = req.url.indexOf("/covers/") >= 0;
   e.respondWith(caches.match(req.url, { ignoreSearch: true }).then(function (hit) {
     var net = fetch(req.url).then(function (res) {
-      if (res && res.ok) { var copy = res.clone(); caches.open(isFile ? FILES : SHELL).then(function (c) { c.put(req.url, copy); }); }
+      if (res && res.ok) { var copy = res.clone(); caches.open(isFile ? FILES : (isCover ? COVERS : SHELL)).then(function (c) { c.put(req.url, copy); }); }
       return res;
     });
-    if (hit) { if (!isFile) net.catch(function () {}); return hit; }
+    if (hit) { net.catch(function () {}); return hit; }
     return net.catch(function () { return caches.match("index.html"); });
   }));
 });

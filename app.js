@@ -43,13 +43,18 @@
 
   function coverHTML(b, big) {
     var c = CAT[b.cat], h = hash(b.project), ang = 120 + (h % 90), rx = 20 + (h % 60), ry = 10 + ((h >> 3) % 40);
-    return '<div class="cover" style="background:linear-gradient(' + ang + 'deg,' + c.from + ',' + c.to + ');filter:hue-rotate(' + ((h % 56) - 28) + 'deg)">' +
+    // CSS gradient cover is always rendered underneath; the illustrated image (if any) sits on top
+    // and removes itself on error so the CSS cover shows through as a fallback.
+    return '<div class="cover' + (b.cover ? ' has-img' : '') + '">' +
+      '<div class="cbg" style="background:linear-gradient(' + ang + 'deg,' + c.from + ',' + c.to + ');filter:hue-rotate(' + ((h % 56) - 28) + 'deg)"></div>' +
       '<div class="ring" style="width:90%;aspect-ratio:1;left:' + rx + '%;top:' + ry + '%;border:14px solid rgba(255,255,255,.10)"></div>' +
       '<div class="ring" style="width:45%;aspect-ratio:1;left:' + (rx - 30) + '%;top:' + (60 + h % 20) + '%;background:rgba(255,255,255,.08)"></div>' +
       '<div class="spine"></div>' +
-      (b.local && !big ? '<span class="badge">OFFLINE</span>' : '') +
       '<div class="cv"><div class="tk">' + esc(b.ticker || c.label) + '</div><div class="tt">' + esc(b.title) + '</div>' +
-      '<div class="ft"><span>' + esc(b.project) + '</span><span>' + (b.year || "") + '</span></div></div></div>';
+      '<div class="ft"><span>' + esc(b.project) + '</span><span>' + (b.year || "") + '</span></div></div>' +
+      (b.cover ? '<img class="cimg" src="' + esc(b.cover) + '" alt="" ' + (big ? '' : 'loading="lazy" ') + 'decoding="async" onerror="this.parentNode.classList.remove(\'has-img\');this.remove()">' : '') +
+      (b.local && !big ? '<span class="badge">OFFLINE</span>' : '') +
+      '</div>';
   }
   function bookHTML(b) {
     var w = st.want.indexOf(b.id) >= 0;

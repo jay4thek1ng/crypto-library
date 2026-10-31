@@ -12,7 +12,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-1s/bitcoin.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/bitcoin.webp"
 },
 {
 "id": "ethereum-white",
@@ -27,7 +28,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "web",
 "local": "library/docs/ethereum-white.html",
-"localKind": "html"
+"localKind": "html",
+"cover": "covers/ethereum-white.webp"
 },
 {
 "id": "ethereum-yellow",
@@ -42,7 +44,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-1s/ethereum-yellow.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/ethereum-yellow.webp"
 },
 {
 "id": "solana",
@@ -59,7 +62,8 @@ window.LIBRARY=[
 ],
 "kind": "pdf",
 "local": "library/layer-1s/solana.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/solana.webp"
 },
 {
 "id": "ouroboros",
@@ -74,7 +78,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "",
-"localKind": ""
+"localKind": "",
+"cover": "covers/ouroboros.webp"
 },
 {
 "id": "polkadot",
@@ -89,7 +94,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-1s/polkadot.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/polkadot.webp"
 },
 {
 "id": "polkadot-overview",
@@ -104,7 +110,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-1s/polkadot-overview.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/polkadot-overview.webp"
 },
 {
 "id": "cosmos",
@@ -119,7 +126,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "web",
 "local": "library/docs/cosmos.html",
-"localKind": "html"
+"localKind": "html",
+"cover": "covers/cosmos.webp"
 },
 {
 "id": "tendermint",
@@ -134,7 +142,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/cryptography-consensus/tendermint.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/tendermint.webp"
 },
 {
 "id": "avalanche-consensus",
@@ -149,7 +158,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/cryptography-consensus/avalanche-consensus.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/avalanche-consensus.webp"
 },
 {
 "id": "avalanche-platform",
@@ -164,7 +174,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-1s/avalanche-platform.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/avalanche-platform.webp"
 },
 {
 "id": "algorand",
@@ -179,7 +190,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-1s/algorand.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/algorand.webp"
 },
 {
 "id": "tezos",
@@ -194,7 +206,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-1s/tezos.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/tezos.webp"
 },
 {
 "id": "ton",
@@ -209,7 +222,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-1s/ton.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/ton.webp"
 },
 {
 "id": "tron",
@@ -224,7 +238,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-1s/tron.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/tron.webp"
 },
 {
 "id": "hedera",
@@ -239,7 +254,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-1s/hedera.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/hedera.webp"
 },
 {
 "id": "hashgraph",
@@ -254,7 +270,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/cryptography-consensus/hashgraph.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/hashgraph.webp"
 },
 {
 "id": "near-nightshade",
@@ -269,7 +286,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-1s/near-nightshade.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/near-nightshade.webp"
 },
 {
 "id": "sui",
@@ -284,7 +302,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-1s/sui.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/sui.webp"
 },
 {
 "id": "aptos",
@@ -299,7 +318,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "",
-"localKind": ""
+"localKind": "",
+"cover": "covers/aptos.webp"
 },
 {
 "id": "icp",
@@ -314,7 +334,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-1s/icp.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/icp.webp"
 },
 {
 "id": "ripple",
@@ -329,7 +350,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-1s/ripple.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/ripple.webp"
 },
 {
 "id": "xrpl-analysis",
@@ -344,7 +366,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/cryptography-consensus/xrpl-analysis.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/xrpl-analysis.webp"
 },
 {
 "id": "stellar-scp",
@@ -359,7 +382,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-1s/stellar-scp.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/stellar-scp.webp"
 },
 {
 "id": "kaspa-phantom",
@@ -374,7 +398,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "",
-"localKind": ""
+"localKind": "",
+"cover": "covers/kaspa-phantom.webp"
 },
 {
 "id": "zilliqa",
@@ -389,7 +414,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-1s/zilliqa.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/zilliqa.webp"
 },
 {
 "id": "eos",
@@ -404,7 +430,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "web",
 "local": "library/docs/eos.html",
-"localKind": "html"
+"localKind": "html",
+"cover": "covers/eos.webp"
 },
 {
 "id": "mina",
@@ -419,7 +446,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-1s/mina.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/mina.webp"
 },
 {
 "id": "monad-bft",
@@ -434,7 +462,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/cryptography-consensus/monad-bft.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/monad-bft.webp"
 },
 {
 "id": "casper-ffg",
@@ -449,7 +478,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/cryptography-consensus/casper-ffg.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/casper-ffg.webp"
 },
 {
 "id": "gasper",
@@ -464,7 +494,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/cryptography-consensus/gasper.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/gasper.webp"
 },
 {
 "id": "hotstuff",
@@ -479,7 +510,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/cryptography-consensus/hotstuff.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/hotstuff.webp"
 },
 {
 "id": "lightning",
@@ -494,7 +526,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-2s-scaling/lightning.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/lightning.webp"
 },
 {
 "id": "plasma",
@@ -509,7 +542,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-2s-scaling/plasma.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/plasma.webp"
 },
 {
 "id": "arbitrum",
@@ -524,7 +558,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-2s-scaling/arbitrum.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/arbitrum.webp"
 },
 {
 "id": "arbitrum-nitro",
@@ -539,7 +574,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-2s-scaling/arbitrum-nitro.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/arbitrum-nitro.webp"
 },
 {
 "id": "op-stack",
@@ -554,7 +590,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "docs",
 "local": "",
-"localKind": ""
+"localKind": "",
+"cover": "covers/op-stack.webp"
 },
 {
 "id": "zksync",
@@ -569,7 +606,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-2s-scaling/zksync.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/zksync.webp"
 },
 {
 "id": "polygon-matic",
@@ -584,7 +622,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "web",
 "local": "library/docs/polygon-matic.html",
-"localKind": "html"
+"localKind": "html",
+"cover": "covers/polygon-matic.webp"
 },
 {
 "id": "polygon-pol",
@@ -599,7 +638,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-2s-scaling/polygon-pol.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/polygon-pol.webp"
 },
 {
 "id": "celestia",
@@ -614,7 +654,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/layer-2s-scaling/celestia.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/celestia.webp"
 },
 {
 "id": "eigenlayer",
@@ -629,7 +670,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "",
-"localKind": ""
+"localKind": "",
+"cover": "covers/eigenlayer.webp"
 },
 {
 "id": "eigen-token",
@@ -644,7 +686,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "",
-"localKind": ""
+"localKind": "",
+"cover": "covers/eigen-token.webp"
 },
 {
 "id": "eip-4844",
@@ -659,7 +702,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "web",
 "local": "library/docs/eip-4844.html",
-"localKind": "html"
+"localKind": "html",
+"cover": "covers/eip-4844.webp"
 },
 {
 "id": "uniswap-v2",
@@ -674,7 +718,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/defi/uniswap-v2.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/uniswap-v2.webp"
 },
 {
 "id": "uniswap-v3",
@@ -689,7 +734,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/defi/uniswap-v3.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/uniswap-v3.webp"
 },
 {
 "id": "uniswap-v4",
@@ -704,7 +750,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/defi/uniswap-v4.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/uniswap-v4.webp"
 },
 {
 "id": "uniswapx",
@@ -719,7 +766,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/defi/uniswapx.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/uniswapx.webp"
 },
 {
 "id": "aave-v1",
@@ -734,7 +782,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/defi/aave-v1.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/aave-v1.webp"
 },
 {
 "id": "aave-v2",
@@ -749,7 +798,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/defi/aave-v2.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/aave-v2.webp"
 },
 {
 "id": "aave-v3",
@@ -764,7 +814,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/defi/aave-v3.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/aave-v3.webp"
 },
 {
 "id": "compound",
@@ -779,7 +830,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/defi/compound.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/compound.webp"
 },
 {
 "id": "curve-stableswap",
@@ -794,7 +846,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/defi/curve-stableswap.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/curve-stableswap.webp"
 },
 {
 "id": "curve-cryptoswap",
@@ -809,7 +862,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/defi/curve-cryptoswap.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/curve-cryptoswap.webp"
 },
 {
 "id": "balancer",
@@ -824,7 +878,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/defi/balancer.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/balancer.webp"
 },
 {
 "id": "thorchain",
@@ -839,7 +894,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/defi/thorchain.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/thorchain.webp"
 },
 {
 "id": "lido",
@@ -854,7 +910,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/defi/lido.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/lido.webp"
 },
 {
 "id": "hyperliquid",
@@ -869,7 +926,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "docs",
 "local": "",
-"localKind": ""
+"localKind": "",
+"cover": "covers/hyperliquid.webp"
 },
 {
 "id": "dai",
@@ -884,7 +942,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/stablecoins/dai.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/dai.webp"
 },
 {
 "id": "tether",
@@ -899,7 +958,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "web",
 "local": "library/stablecoins/tether.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/tether.webp"
 },
 {
 "id": "ethena",
@@ -914,7 +974,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "docs",
 "local": "",
-"localKind": ""
+"localKind": "",
+"cover": "covers/ethena.webp"
 },
 {
 "id": "chainlink-v1",
@@ -929,7 +990,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/oracles-infra/chainlink-v1.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/chainlink-v1.webp"
 },
 {
 "id": "chainlink-v2",
@@ -944,7 +1006,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/oracles-infra/chainlink-v2.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/chainlink-v2.webp"
 },
 {
 "id": "pyth",
@@ -961,7 +1024,8 @@ window.LIBRARY=[
 ],
 "kind": "pdf",
 "local": "library/oracles-infra/pyth.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/pyth.webp"
 },
 {
 "id": "the-graph",
@@ -976,7 +1040,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/oracles-infra/the-graph.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/the-graph.webp"
 },
 {
 "id": "wormhole",
@@ -993,7 +1058,8 @@ window.LIBRARY=[
 ],
 "kind": "web",
 "local": "library/docs/wormhole.html",
-"localKind": "html"
+"localKind": "html",
+"cover": "covers/wormhole.webp"
 },
 {
 "id": "ipfs",
@@ -1008,7 +1074,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/storage/ipfs.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/ipfs.webp"
 },
 {
 "id": "filecoin",
@@ -1023,7 +1090,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/storage/filecoin.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/filecoin.webp"
 },
 {
 "id": "arweave",
@@ -1038,7 +1106,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/storage/arweave.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/arweave.webp"
 },
 {
 "id": "sia",
@@ -1053,7 +1122,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/storage/sia.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/sia.webp"
 },
 {
 "id": "storj",
@@ -1068,7 +1138,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/storage/storj.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/storj.webp"
 },
 {
 "id": "cryptonote",
@@ -1083,7 +1154,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/privacy/cryptonote.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/cryptonote.webp"
 },
 {
 "id": "ringct",
@@ -1098,7 +1170,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "",
-"localKind": ""
+"localKind": "",
+"cover": "covers/ringct.webp"
 },
 {
 "id": "zerocash",
@@ -1113,7 +1186,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/privacy/zerocash.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/zerocash.webp"
 },
 {
 "id": "zcash-spec",
@@ -1128,7 +1202,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "docs",
 "local": "library/privacy/zcash-spec.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/zcash-spec.webp"
 },
 {
 "id": "mimblewimble",
@@ -1143,7 +1218,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/privacy/mimblewimble.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/mimblewimble.webp"
 },
 {
 "id": "bulletproofs",
@@ -1160,7 +1236,8 @@ window.LIBRARY=[
 ],
 "kind": "pdf",
 "local": "",
-"localKind": ""
+"localKind": "",
+"cover": "covers/bulletproofs.webp"
 },
 {
 "id": "starks",
@@ -1177,7 +1254,8 @@ window.LIBRARY=[
 ],
 "kind": "pdf",
 "local": "",
-"localKind": ""
+"localKind": "",
+"cover": "covers/starks.webp"
 },
 {
 "id": "groth16",
@@ -1192,7 +1270,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "",
-"localKind": ""
+"localKind": "",
+"cover": "covers/groth16.webp"
 },
 {
 "id": "plonk",
@@ -1207,7 +1286,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "",
-"localKind": ""
+"localKind": "",
+"cover": "covers/plonk.webp"
 },
 {
 "id": "alpenglow",
@@ -1224,7 +1304,8 @@ window.LIBRARY=[
 ],
 "kind": "pdf",
 "local": "library/solana-ecosystem/alpenglow.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/alpenglow.webp"
 },
 {
 "id": "jito",
@@ -1239,7 +1320,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "docs",
 "local": "",
-"localKind": ""
+"localKind": "",
+"cover": "covers/jito.webp"
 },
 {
 "id": "jupiter",
@@ -1254,7 +1336,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "docs",
 "local": "",
-"localKind": ""
+"localKind": "",
+"cover": "covers/jupiter.webp"
 },
 {
 "id": "raydium",
@@ -1269,7 +1352,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "docs",
 "local": "",
-"localKind": ""
+"localKind": "",
+"cover": "covers/raydium.webp"
 },
 {
 "id": "helium",
@@ -1286,7 +1370,8 @@ window.LIBRARY=[
 ],
 "kind": "web",
 "local": "library/ai-depin/helium.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/helium.webp"
 },
 {
 "id": "render",
@@ -1303,7 +1388,8 @@ window.LIBRARY=[
 ],
 "kind": "web",
 "local": "",
-"localKind": ""
+"localKind": "",
+"cover": "covers/render.webp"
 },
 {
 "id": "bittensor",
@@ -1318,7 +1404,8 @@ window.LIBRARY=[
 "tags": [],
 "kind": "pdf",
 "local": "library/ai-depin/bittensor.pdf",
-"localKind": "pdf"
+"localKind": "pdf",
+"cover": "covers/bittensor.webp"
 },
 {
 "id": "livepeer",
@@ -1333,6 +1420,7 @@ window.LIBRARY=[
 "tags": [],
 "kind": "web",
 "local": "library/docs/livepeer.html",
-"localKind": "html"
+"localKind": "html",
+"cover": "covers/livepeer.webp"
 }
 ];

@@ -31,6 +31,11 @@ main{max-width:1240px;margin:0 auto;padding:8px 20px 20px}
 .cover{position:relative;aspect-ratio:2/3;border-radius:3px 9px 9px 3px;overflow:hidden;color:#fff;box-shadow:0 1px 2px rgba(0,0,0,.18),0 6px 16px rgba(0,0,0,.18);transition:transform .18s ease,box-shadow .18s ease}
 .book:hover .cover,.book:focus-visible .cover{transform:translateY(-4px);box-shadow:0 2px 4px rgba(0,0,0,.2),0 12px 26px rgba(0,0,0,.24)}
 .book:focus-visible{outline:2px solid var(--accent2);outline-offset:4px;border-radius:8px}
+.cbg{position:absolute;inset:0}
+.cimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:2}
+.cover.has-img::after{content:"";position:absolute;inset:0 auto 0 0;width:7px;z-index:3;background:linear-gradient(90deg,rgba(0,0,0,.35),rgba(255,255,255,.10) 70%,rgba(0,0,0,0))}
+.badge{z-index:4}
+.cover.has-img .badge{background:rgba(0,0,0,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .spine{position:absolute;inset:0 auto 0 0;width:8px;background:linear-gradient(90deg,rgba(0,0,0,.28),rgba(0,0,0,.08) 70%,rgba(255,255,255,.22))}
 .ring{position:absolute;border-radius:50%}
 .cv{position:absolute;inset:0;padding:12px 10px 10px 17px;display:flex;flex-direction:column;justify-content:space-between}
