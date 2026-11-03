@@ -82,3 +82,55 @@ main{max-width:1240px;margin:0 auto;padding:8px 20px 20px}
 @keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 @media (max-width:520px){h1{font-size:30px}.grid{grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:22px 14px}.cv .tt{font-size:12px}.top-inner,main{padding-left:14px;padding-right:14px}}
+/* ---- Android app build additions ---- */
+.title-row{align-items:center;flex-wrap:wrap}
+.title-row h1{margin-bottom:6px}
+.add-btn{margin-left:auto;border:0;border-radius:999px;background:var(--accent);color:#fff;font-weight:600;font-size:14px;padding:7px 14px;cursor:pointer;margin-bottom:6px}
+.zoom{display:flex;align-items:center;gap:2px}
+.z-btn{border:0;background:var(--fill);color:var(--text);width:34px;height:32px;border-radius:8px;font-size:20px;line-height:1;cursor:pointer}
+.z-lbl{border:0;background:none;color:var(--accent2);font-size:13px;min-width:46px;padding:4px 2px;cursor:pointer}
+.reader{overflow:hidden}
+.pdf-view{flex:1;overflow:auto;background:#525659;touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.pdf-pages{width:max-content;min-width:100%;padding:8px;box-sizing:border-box}
+.pg{position:relative;margin:0 auto 8px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.pg canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.pdf-status{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);background:rgba(0,0,0,.72);color:#fff;padding:12px 18px;border-radius:12px;font-size:15px;max-width:85%;text-align:center}
+.pdf-status[hidden],.pdf-view[hidden],#readerFrame[hidden]{display:none}
+.page-no{position:absolute;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:3px 9px;border-radius:999px;pointer-events:none}
+.page-no:empty{display:none}
+#readerFrame{background:#fff}
+.btn.danger{color:#ff3b30}
+.btn.danger.armed{background:#ff3b30;color:#fff}
+.upform h3{font-size:22px;margin:0 0 12px}
+.upform label{display:block;font-size:13px;color:var(--text2);margin:0 0 10px}
+.upform input,.upform select,.upform textarea{display:block;width:100%;margin-top:4px;padding:10px 12px;border:0;border-radius:10px;background:var(--fill);font-size:16px;color:var(--text);max-width:none}
+.upform textarea{resize:vertical;font:inherit;font-size:16px}
+.up-row{display:grid;grid-template-columns:1fr 1.4fr;gap:10px}
+.up-top{display:flex;gap:14px;align-items:center;margin-bottom:12px}
+.up-thumb{width:64px;aspect-ratio:2/3;border-radius:4px;background:var(--fill);overflow:hidden;flex:none;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:12px;font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.up-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.up-top .muted{margin:0;word-break:break-word}
+.up-status{color:var(--text2);font-size:14px;min-height:1em}
+.cover.user .cimg{object-position:top}
+.cover.user .cv{justify-content:flex-start;gap:6px;z-index:2}
+.cover.user .cv .tt{-webkit-line-clamp:4}
+.cover.user .cv .ft{margin-top:auto}
+.cover.user .pthumb{position:absolute;right:9%;bottom:15%;width:50%;aspect-ratio:2/3;object-fit:cover;object-position:top;background:#fff;border-radius:2px;transform:rotate(-5deg);box-shadow:0 4px 14px rgba(0,0,0,.35);z-index:1}
+.cover.user .cv .tt{-webkit-line-clamp:3}
+.cover.user .pthumb{width:44%;bottom:13%}
+.cover.user .cv .tk{padding-right:54px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.big .cover.user .cv .tk{padding-right:0}
+/* ---- Community ---- */
+.comm-note{margin:-6px 0 14px;color:var(--text2);font-size:13.5px;line-height:1.45}
+.empty.small{padding:16px 0;text-align:left}
+.summary.plain{white-space:pre-wrap;word-break:break-word}
+.vis{display:grid;gap:8px;margin:0 0 12px}
+.vis-opt{display:flex!important;gap:10px;align-items:flex-start;background:var(--fill);border-radius:12px;padding:10px 12px;color:var(--text)!important;font-size:14px!important;cursor:pointer}
+.vis-opt input{width:auto!important;margin:3px 0 0!important;display:inline!important}
+.vis-opt small{color:var(--text2);font-size:12.5px}
+.public-note{background:color-mix(in srgb,var(--accent2) 12%,transparent);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.45;color:var(--text)}
+.public-note[hidden]{display:none}
+.up-progress{height:6px;border-radius:3px;background:var(--fill);overflow:hidden;margin:6px 0 12px}
+.up-progress[hidden]{display:none}
+.up-progress>div{height:100%;width:0;background:var(--accent2);transition:width .2s}
+.btn[disabled]{opacity:.55;cursor:default}
+.bar-btn.newtab[hidden]{display:none}

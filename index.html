@@ -22,6 +22,7 @@
     <div class="title-row">
       <h1>Library</h1>
       <span id="count" class="count"></span>
+      <button id="addPaper" class="add-btn" type="button">+ Upload white paper</button>
     </div>
     <div class="search-wrap">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
@@ -45,7 +46,7 @@
 <footer class="foot">
   <p id="offlineNote"></p>
   <p><button id="cacheAll" class="link-btn" hidden>Save every paper for offline use</button> <span id="cacheStatus"></span></p>
-  <p class="muted">Metadata from each project's official source. Papers marked "Offline" are bundled with this app; others open the official page.</p>
+  <p class="muted">Metadata from each project's official source. Papers marked "Offline" are bundled with this app; others open the official page. The Community shelf holds papers uploaded by users: uploads are public, visible to everyone, and can be reported; the owner removes inappropriate ones. "Only on this device" uploads stay private in My Uploads. PDF rendering by Mozilla PDF.js (Apache-2.0).</p>
 </footer>
 
 <div id="sheet" class="sheet" hidden aria-modal="true" role="dialog">
@@ -60,11 +61,16 @@
   <div class="reader-bar">
     <button id="readerBack" class="bar-btn">‹ Library</button>
     <div id="readerTitle" class="reader-title"></div>
-    <a id="readerNewTab" class="bar-btn" target="_blank" rel="noopener">Open in new tab</a>
+    <a id="readerNewTab" class="bar-btn newtab" target="_blank" rel="noopener" hidden>Open ↗</a>
+    <div class="zoom"><button id="zoomOut" class="z-btn" aria-label="Zoom out">−</button><button id="zoomLbl" class="z-lbl" aria-label="Fit width">100%</button><button id="zoomIn" class="z-btn" aria-label="Zoom in">+</button></div>
   </div>
-  <iframe id="readerFrame" title="Paper reader"></iframe>
+  <div id="pdfView" class="pdf-view" hidden><div id="pdfPages" class="pdf-pages"></div></div>
+  <div id="pdfStatus" class="pdf-status" hidden></div>
+  <div id="pageNo" class="page-no"></div>
+  <iframe id="readerFrame" title="Paper reader" hidden></iframe>
 </div>
 
+<script src="config.js"></script>
 <script src="data.js"></script>
 <script src="app.js"></script>
 </body>

@@ -19,7 +19,15 @@ open it in Safari or Chrome, then:
 Then tap "Save every paper for offline use" at the bottom of the library to keep all the papers on the phone.
 Without hosting, you can still open the PDFs in the "library" folder with the Files app (iPhone) or a file manager (Android).
 
+COMMUNITY UPLOADS
+"+ Upload white paper" shares a PDF on the public Community shelf (needs internet; max 25 MB, 5 uploads
+per hour). Uploads are public and can be reported; the owner removes bad ones. "Only on this device"
+keeps a private copy in My Uploads instead. The Community list is cached for offline use and papers
+you open are saved for offline reading. Configure the backend in config.js (public URL + anon key only).
+
 CONTENTS
 index.html, app.js, styles.css, data.js   the app
 library/                                  bundled PDFs by shelf, offline web-format papers in docs/, catalog.json
+config.js                                 Community backend URL + public anon key
+pdfjs/                                    Mozilla PDF.js reader (Apache-2.0)
 manifest.json, sw.js, icons/              install-as-app (PWA) support when hosted

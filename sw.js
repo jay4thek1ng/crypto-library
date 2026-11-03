@@ -1,7 +1,8 @@
 importScripts("precache-list.js");
-// v2: illustrated covers. FILES cache name kept at v1 on purpose so users keep their downloaded PDFs.
-var SHELL = "wp-shell-v2", FILES = "wp-files-v1", COVERS = "wp-covers-v2";
-var SHELL_FILES = ["./", "index.html", "styles.css", "app.js", "data.js", "manifest.json", "precache-list.js",
+// v3: pdf.js reader + Community uploads. v2: illustrated covers. FILES cache name kept at v1 on purpose so users keep their downloaded PDFs.
+var SHELL = "wp-shell-v3", FILES = "wp-files-v1", COVERS = "wp-covers-v2";
+var SHELL_FILES = ["./", "index.html", "styles.css", "app.js", "config.js", "data.js", "manifest.json", "precache-list.js",
+  "pdfjs/pdf.min.mjs", "pdfjs/pdf.worker.min.mjs",
   "icons/icon-192.png", "icons/icon-512.png", "icons/maskable-512.png", "icons/apple-touch-icon.png", "icons/favicon-64.png"];
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(SHELL).then(function (c) { return c.addAll(SHELL_FILES); })
