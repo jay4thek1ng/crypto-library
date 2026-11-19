@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Paper</title>
+<style>
+  html, body { margin: 0; background: #525659; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  #status { display: none; position: fixed; left: 50%; top: 42%; transform: translate(-50%, -50%); max-width: 86%; background: rgba(0,0,0,.78); padding: 14px 18px; border-radius: 12px; text-align: center; line-height: 1.4; z-index: 2; }
+  #pages { padding: 8px 0 32px; }
+  .pg { position: relative; margin: 0 auto 8px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.45); }
+  .pg canvas { display: block; width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<div id="status">Opening…</div>
+<div id="pages"></div>
+<script type="module">
+  const statusEl = document.getElementById('status');
+  const pagesEl = document.getElementById('pages');
+  let pdfDoc = null;
+  let loadingTask = null;
+  let renderToken = 0;
+  let zoom = 1;
+  let page = 1;
+  let pageCount = 0;
+  let placeholders = [];
+  let observer = null;
+
+  function post(msg) {
+    const data = JSON.stringify(msg);
+    try {
+      if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) window.ReactNativeWebView.postMessage(data);
+      else if (window.parent && window.parent !== window) window.parent.postMessage(data, '*');
+    } catch (e) {}
+  }
+
+  function status(text) {
+    statusEl.textContent = text || '';
+    statusEl.style.display = text ? 'block' : 'none';
+  }
+
+  function releasePage(pg) {
+    if (pg.canvas) {
+      pg.canvas.width = 0;
+      pg.canvas.height = 0;
+      pg.canvas.remove();
+      pg.canvas = null;
+    }
+    pg.scale = 0;
+  }
+
+  async function renderPage(pg, scale, dpr, my) {
+    if (!pdfDoc || pg.scale === scale) return;
+    const want = scale;
+    pg.scale = want;
+    try {
+      const pdfPage = await pdfDoc.getPage(pg.n);
+      if (my !== renderToken || pg.scale !== want) return;
+      const viewport = pdfPage.getViewport({ scale: want * dpr });
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.floor(viewport.width);
+      canvas.height = Math.floor(viewport.height);
+      const ctx = canvas.getContext('2d', { alpha: false });
+      await pdfPage.render({ canvasContext: ctx, viewport: viewport, canvas: canvas }).promise;
+      if (my !== renderToken || pg.scale !== want) return;
+      const css = pdfPage.getViewport({ scale: want });
+      pg.el.style.width = Math.floor(css.width) + 'px';
+      pg.el.style.height = Math.floor(css.height) + 'px';
+      pg.el.replaceChildren(canvas);
+      pg.canvas = canvas;
+      if (document.body.dataset.ready !== '1') {
+        document.body.dataset.ready = '1';
+        status('');
+      }
+    } catch (e) {
+      if (pg.scale === want) pg.scale = 0;
+    }
+  }
+
+  async function buildPlaceholders(my) {
+    if (!pdfDoc) return;
+    if (observer) { observer.disconnect(); observer = null; }
+    const first = await pdfDoc.getPage(1);
+    if (my !== renderToken) return;
+    const base = first.getViewport({ scale: 1 });
+    const width = Math.max(120, document.documentElement.clientWidth - 16);
+    const scale = (width / base.width) * zoom;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    pagesEl.replaceChildren();
+    placeholders = [];
+    for (let n = 1; n <= pageCount; n++) {
+      const el = document.createElement('div');
+      el.className = 'pg';
+      el.id = 'p' + n;
+      el.dataset.n = String(n);
+      el.style.width = Math.floor(base.width * scale) + 'px';
+      el.style.height = Math.floor(base.height * scale) + 'px';
+      pagesEl.appendChild(el);
+      placeholders.push({ n: n, el: el, scale: 0, canvas: null });
+    }
+    observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        const n = Number(entry.target.dataset.n);
+        const pg = placeholders[n - 1];
+        if (!pg) return;
+        if (entry.isIntersecting) renderPage(pg, scale, dpr, my);
+        else releasePage(pg);
+      });
+    }, { root: null, rootMargin: '1000px 0px' });
+    placeholders.forEach(function (pg) { observer.observe(pg.el); });
+    requestAnimationFrame(function () {
+      const target = document.getElementById('p' + page);
+      if (target) target.scrollIntoView();
+    });
+  }
+
+  async function openFile(file, startPage) {
+    const my = ++renderToken;
+    if (observer) { observer.disconnect(); observer = null; }
+    if (loadingTask) { try { await loadingTask.destroy(); } catch (e) {} loadingTask = null; }
+    pdfDoc = null;
+    pagesEl.replaceChildren();
+    placeholders = [];
+    document.body.dataset.ready = '';
+    status('Opening…');
+    if (!file) {
+      status('No PDF to open.');
+      document.body.dataset.ready = 'error';
+      post({ type: 'error', message: 'Missing PDF' });
+      return;
+    }
+    try {
+      const pdfjs = await import('./pdf.min.mjs');
+      pdfjs.GlobalWorkerOptions.workerSrc = new URL('./pdf.worker.min.mjs', import.meta.url).href;
+      const local = file.indexOf('file:') === 0 || file.indexOf('content:') === 0;
+      loadingTask = pdfjs.getDocument({
+        url: file,
+        cMapUrl: new URL('./cmaps/', import.meta.url).href,
+        cMapPacked: true,
+        standardFontDataUrl: new URL('./standard_fonts/', import.meta.url).href,
+        disableRange: local,
+        disableStream: local
+      });
+      const doc = await loadingTask.promise;
+      if (my !== renderToken) return;
+      pdfDoc = doc;
+      pageCount = doc.numPages;
+      page = Math.min(pageCount, Math.max(1, startPage || 1));
+      await buildPlaceholders(my);
+      if (my !== renderToken) return;
+      post({ type: 'ready', pages: pageCount });
+      post({ type: 'page', page: page, pages: pageCount });
+      post({ type: 'zoom', zoom: zoom });
+    } catch (err) {
+      if (my !== renderToken) return;
+      const message = (err && err.message) || String(err);
+      status("Couldn't open this PDF. " + message);
+      document.body.dataset.ready = 'error';
+      post({ type: 'error', message: message });
+    }
+  }
+
+  let scrollTick = 0;
+  window.addEventListener('scroll', function () {
+    if (scrollTick) return;
+    scrollTick = requestAnimationFrame(function () {
+      scrollTick = 0;
+      if (!placeholders.length) return;
+      const mid = window.scrollY + 64;
+      let cur = 1;
+      for (let i = 0; i < placeholders.length; i++) {
+        if (placeholders[i].el.offsetTop <= mid) cur = placeholders[i].n;
+        else break;
+      }
+      if (cur !== page) {
+        page = cur;
+        post({ type: 'page', page: page, pages: pageCount });
+      }
+    });
+  }, { passive: true });
+
+  let resizeTick = 0;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTick);
+    resizeTick = setTimeout(function () {
+      if (pdfDoc) buildPlaceholders(renderToken);
+    }, 150);
+  });
+
+  window.reader = {
+    configure: function (opts) {
+      opts = opts || {};
+      zoom = Math.min(3.5, Math.max(0.6, Number(opts.zoom) || 1));
+      return openFile(opts.file || '', Number(opts.page) || 1);
+    },
+    setPage: function (n) {
+      if (!pageCount) return;
+      n = Math.min(pageCount, Math.max(1, n | 0));
+      page = n;
+      const el = document.getElementById('p' + n);
+      if (el) el.scrollIntoView({ block: 'start' });
+      post({ type: 'page', page: page, pages: pageCount });
+    },
+    setZoom: function (next) {
+      const value = Math.min(3.5, Math.max(0.6, Number(next) || 1));
+      if (Math.abs(value - zoom) < 0.01) {
+        post({ type: 'zoom', zoom: zoom });
+        return;
+      }
+      zoom = value;
+      const keep = page;
+      buildPlaceholders(++renderToken).then(function () {
+        page = keep;
+        const el = document.getElementById('p' + keep);
+        if (el) el.scrollIntoView();
+        post({ type: 'zoom', zoom: zoom });
+      });
+    }
+  };
+
+  const params = new URLSearchParams(location.search);
+  post({ type: 'booted' });
+  const initialFile = params.get('file') || '';
+  if (initialFile) openFile(initialFile, Number(params.get('page') || '1'));
+  else status('Opening…');
+</script>
+</body>
+</html>
