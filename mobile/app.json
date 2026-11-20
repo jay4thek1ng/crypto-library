@@ -43,6 +43,17 @@
     ],
     "experiments": {
       "typedRoutes": false
-    }
+    },
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "9c5c4608-5a61-42d1-8dba-109597965f7d"
+      }
+    },
+    "owner": "jordan-management-group"
   }
 }
