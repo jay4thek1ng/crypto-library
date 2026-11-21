@@ -1,3 +1,5 @@
+import { getRandomBytes } from 'expo-crypto';
+
 const DEVICE_RE = /^[A-Za-z0-9_-]{16,64}$/;
 
 export function isValidDeviceId(id: string): boolean {
@@ -13,8 +15,8 @@ export function bytesToDeviceId(bytes: Uint8Array): string {
 }
 
 export function newDeviceId(): string {
-  const bytes = new Uint8Array(18);
-  globalThis.crypto.getRandomValues(bytes);
+  // Hermes has no Web Crypto (globalThis.crypto is undefined on Android), so use expo-crypto.
+  const bytes = getRandomBytes(18);
   const id = bytesToDeviceId(bytes);
   if (!isValidDeviceId(id)) throw new Error('Could not create a device id');
   return id;

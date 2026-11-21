@@ -15,7 +15,7 @@
     },
     "android": {
       "package": "io.github.jay4thek1ng.cryptolibrary",
-      "versionCode": 3,
+      "versionCode": 4,
       "adaptiveIcon": {
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",

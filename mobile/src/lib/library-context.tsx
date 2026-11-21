@@ -140,21 +140,27 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let cancel = false;
     void (async () => {
-      const loaded = await loadState(asyncKv);
-      const withDevice = isValidDeviceId(loaded.deviceId) ? loaded : { ...loaded, deviceId: newDeviceId() };
-      if (withDevice !== loaded) await saveState(asyncKv, withDevice);
-      if (cancel) return;
-      setState(withDevice);
-      const cachedRows = await readCommunityCache();
-      if (!cancel && cachedRows) {
-        replaceCommunity(parseCommunityRows(cachedRows, SUPABASE_URL));
-        setCommunityStatus('offline');
-        setCommunityMessage('Offline · connect to the internet to see community uploads');
+      // Any startup failure must still mark the library ready, or the splash screen never hides.
+      try {
+        const loaded = await loadState(asyncKv);
+        const withDevice = isValidDeviceId(loaded.deviceId) ? loaded : { ...loaded, deviceId: newDeviceId() };
+        if (withDevice !== loaded) await saveState(asyncKv, withDevice);
+        if (cancel) return;
+        setState(withDevice);
+        const cachedRows = await readCommunityCache();
+        if (!cancel && cachedRows) {
+          replaceCommunity(parseCommunityRows(cachedRows, SUPABASE_URL));
+          setCommunityStatus('offline');
+          setCommunityMessage('Offline · connect to the internet to see community uploads');
+        }
+        const records = await measureDownloads().catch(() => []);
+        if (!cancel) setCache(records);
+      } catch (error) {
+        console.error('Library startup failed', error);
       }
-      const records = await measureDownloads().catch(() => []);
-      if (!cancel) setCache(records);
-      if (!cancel) setReady(true);
-      if (!cancel) await refreshCommunity();
+      if (cancel) return;
+      setReady(true);
+      await refreshCommunity();
     })();
     return () => {
       cancel = true;
