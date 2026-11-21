@@ -86,3 +86,22 @@ export function stripCommunityCovers(rows: unknown[]): unknown[] {
     return copy;
   });
 }
+
+export const COMMUNITY_LOADING_MESSAGE = 'Loading community uploads…';
+export const COMMUNITY_ONLINE_MESSAGE = 'Shared by app users and public to everyone.';
+export const COMMUNITY_OFFLINE_MESSAGE = 'Offline · connect to the internet to see community uploads';
+export const COMMUNITY_ERROR_MESSAGE = 'Community library unreachable · tap to retry';
+
+export function resolveCommunityFailure(
+  error: unknown,
+  deviceOffline: boolean,
+): { status: 'offline' | 'error'; message: string } {
+  const status = error && typeof error === 'object' && 'status' in error && typeof (error as { status: unknown }).status === 'number'
+    ? (error as { status: number }).status
+    : 0;
+  // An HTTP status means the server responded, so the device is online even if NetInfo disagrees.
+  if (status === 0 && deviceOffline) {
+    return { status: 'offline', message: COMMUNITY_OFFLINE_MESSAGE };
+  }
+  return { status: 'error', message: COMMUNITY_ERROR_MESSAGE };
+}

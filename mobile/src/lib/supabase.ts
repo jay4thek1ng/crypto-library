@@ -19,9 +19,10 @@ export class ApiError extends Error {
 }
 
 export async function sbJSON(method: string, path: string, body?: unknown, prefer = 'return=minimal'): Promise<unknown> {
+  const url = `${SUPABASE_URL}${path}`;
   let response: Response;
   try {
-    response = await fetch(`${SUPABASE_URL}${path}`, {
+    response = await fetch(url, {
       method,
       headers: supabaseHeaders(SUPABASE_ANON_KEY, {
         'Content-Type': 'application/json',
@@ -29,7 +30,8 @@ export async function sbJSON(method: string, path: string, body?: unknown, prefe
       }),
       body: body === undefined ? undefined : JSON.stringify(body),
     });
-  } catch {
+  } catch (error) {
+    console.warn(`Supabase request failed: ${method} ${url} status=0`, error);
     throw new ApiError('NETWORK', 0);
   }
   const text = await response.text();
@@ -43,7 +45,9 @@ export async function sbJSON(method: string, path: string, body?: unknown, prefe
   }
   if (!response.ok) {
     const record = json && typeof json === 'object' ? (json as { message?: string; error?: string }) : null;
-    throw new ApiError(record?.message || record?.error || `HTTP ${response.status}`, response.status);
+    const message = record?.message || record?.error || `HTTP ${response.status}`;
+    console.warn(`Supabase request failed: ${method} ${url} status=${response.status} ${message}`);
+    throw new ApiError(message, response.status);
   }
   return json;
 }
@@ -87,7 +91,8 @@ export async function uploadPdfObject(name: string, source: { uri: string; webFi
     let response: Response;
     try {
       response = await fetch(url, { method: 'POST', headers, body });
-    } catch {
+    } catch (error) {
+      console.warn(`Supabase upload failed: POST ${url} status=0`, error);
       throw new ApiError('NETWORK', 0);
     }
     if (!response.ok) {
@@ -99,6 +104,7 @@ export async function uploadPdfObject(name: string, source: { uri: string; webFi
       } catch {
         if (text) message = text.slice(0, 300);
       }
+      console.warn(`Supabase upload failed: POST ${url} status=${response.status} ${message}`);
       throw new ApiError(message, response.status);
     }
     return;
@@ -116,6 +122,7 @@ export async function uploadPdfObject(name: string, source: { uri: string; webFi
     } catch {
       if (result.body) message = result.body.slice(0, 300);
     }
+    console.warn(`Supabase upload failed: POST ${url} status=${result.status} ${message}`);
     throw new ApiError(message, result.status);
   }
 }

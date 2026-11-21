@@ -164,17 +164,27 @@ export default function ReaderScreen() {
             />
             <Text style={styles.pages}>{pages ? `/ ${pages}` : ''}</Text>
             <Pressable accessibilityRole="button" accessibilityLabel="Zoom out" onPress={() => changeZoom(1 / 1.25)} style={styles.zoom}><Text style={styles.zoomText}>−</Text></Pressable>
-            <Pressable accessibilityRole="button" accessibilityLabel="Fit width" onPress={() => { setZoom(1); frame.current?.setZoom(1); }}><Text style={styles.zoomLabel}>{Math.round(zoom * 100)}%</Text></Pressable>
+            <Pressable accessibilityRole="button" accessibilityLabel="Reset zoom to fit width" onPress={() => { setZoom(1); frame.current?.setZoom(1); }}><Text style={styles.zoomLabel}>{Math.round(zoom * 100)}%</Text></Pressable>
             <Pressable accessibilityRole="button" accessibilityLabel="Zoom in" onPress={() => changeZoom(1.25)} style={styles.zoom}><Text style={styles.zoomText}>+</Text></Pressable>
             <Pressable
               accessibilityRole="button"
+              accessibilityLabel="Fit width"
+              onPress={() => { setZoom(1); frame.current?.setZoom(1); }}
+              style={[styles.fitBtn, Math.round(zoom * 100) !== 100 && styles.fitBtnActive]}
+            >
+              <Text style={[styles.fitText, Math.round(zoom * 100) !== 100 && styles.fitTextActive]}>Fit</Text>
+            </Pressable>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={bookmarked ? 'Remove bookmark' : 'Bookmark page'}
+              style={styles.bookmarkBtn}
               onPress={() => {
                 if (!item) return;
                 if (bookmarked) library.removeBookmark(item.id, page);
                 else library.addBookmark(item.id, page, item.title);
               }}
             >
-              <Text style={styles.bookmark}>{bookmarked ? 'Saved' : 'Bookmark'}</Text>
+              <Text style={styles.bookmark}>{bookmarked ? 'Bookmarked' : 'Bookmark'}</Text>
             </Pressable>
           </View>
         ) : null}
@@ -198,14 +208,19 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: theme.bg },
   chrome: { backgroundColor: theme.paper, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.line },
   bar: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 10, paddingTop: 8 },
-  tools: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingBottom: 8, paddingTop: 4 },
+  tools: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingBottom: 8, paddingTop: 4 },
   back: { color: theme.accent2, fontSize: 16, paddingVertical: 6 },
   title: { flex: 1, color: theme.text, fontWeight: '600', fontSize: 15 },
-  pageInput: { width: 42, color: theme.text, backgroundColor: theme.fill, borderRadius: 8, textAlign: 'center', paddingVertical: 4, fontSize: 14 },
-  pages: { color: theme.text3, fontSize: 13, marginRight: 4 },
-  zoom: { width: 32, height: 30, borderRadius: 8, backgroundColor: theme.fill, alignItems: 'center', justifyContent: 'center' },
+  pageInput: { width: 40, color: theme.text, backgroundColor: theme.fill, borderRadius: 8, textAlign: 'center', paddingVertical: 4, fontSize: 14 },
+  pages: { color: theme.text3, fontSize: 13, marginRight: 2 },
+  zoom: { width: 30, height: 30, borderRadius: 8, backgroundColor: theme.fill, alignItems: 'center', justifyContent: 'center' },
   zoomText: { color: theme.text, fontSize: 18, lineHeight: 20 },
-  zoomLabel: { color: theme.accent2, fontSize: 13, minWidth: 42, textAlign: 'center' },
+  zoomLabel: { color: theme.accent2, fontSize: 13, minWidth: 38, textAlign: 'center' },
+  fitBtn: { height: 30, paddingHorizontal: 8, borderRadius: 8, backgroundColor: theme.fill, alignItems: 'center', justifyContent: 'center' },
+  fitBtnActive: { borderWidth: StyleSheet.hairlineWidth, borderColor: theme.accent2 },
+  fitText: { color: theme.text3, fontSize: 12, fontWeight: '600' },
+  fitTextActive: { color: theme.accent2 },
+  bookmarkBtn: { marginLeft: 'auto' },
   bookmark: { color: theme.accent, fontSize: 14, fontWeight: '700', paddingHorizontal: 4 },
   center: { padding: 24, alignItems: 'center', gap: 10 },
   status: { color: theme.text2 },

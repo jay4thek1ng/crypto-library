@@ -31,7 +31,15 @@ export default function LibraryScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
   const searched = useMemo(() => searchPapers(library.items, query), [library.items, query]);
-  const filtering = query.trim().length > 0 || shelf !== 'all';
+  const hasQuery = query.trim().length > 0;
+  const filtering = hasQuery || shelf !== 'all';
+  const visibleShelves = useMemo(
+    () => SHELF_ORDER
+      .filter((item) => shelf === 'all' || shelf === item.key)
+      .map((item) => ({ item, papers: papersOnShelf(searched, item.key, sort) }))
+      .filter(({ item, papers }) => papers.length > 0 || (item.key === 'CM' && (shelf === 'CM' || !hasQuery))),
+    [hasQuery, searched, shelf, sort],
+  );
   const pad = 16;
   const gap = 14;
   const cols = width >= 980 ? 6 : width >= 760 ? 5 : 3;
@@ -131,30 +139,47 @@ export default function LibraryScreen() {
             </ScrollView>
           </View>
         ) : null}
-        {SHELF_ORDER.filter((item) => shelf === 'all' || shelf === item.key).map((item) => {
-          const papers = papersOnShelf(searched, item.key, sort);
-          if (papers.length === 0 && !(item.key === 'CM' && !filtering)) return null;
-          return (
-            <View key={item.key} style={styles.shelf}>
-              <View style={styles.shelfHead}>
-                <Text style={styles.shelfTitle}>{SHELVES[item.key].label}</Text>
-                <Text style={styles.shelfMeta}>{papers.length} {papers.length === 1 ? 'paper' : 'papers'}</Text>
-              </View>
-              {item.key === 'CM' ? (
-                <Text style={styles.note}>
-                  {library.communityMessage}{' '}
-                  <Text style={styles.linkInline} onPress={() => void choosePdf()}>Upload a white paper</Text>
-                </Text>
-              ) : null}
-              {papers.length === 0 ? <Text style={styles.empty}>{library.communityStatus === 'loading' ? 'Loading…' : 'No community uploads yet. Be the first to share one.'}</Text> : (
-                <View style={[styles.grid, { gap }]}>
-                  {papers.map((paper) => <PaperCard key={paper.id} item={paper} width={coverW} />)}
-                </View>
-              )}
+        {visibleShelves.map(({ item, papers }) => (
+          <View key={item.key} style={styles.shelf}>
+            <View style={styles.shelfHead}>
+              <Text style={styles.shelfTitle}>{SHELVES[item.key].label}</Text>
+              <Text style={styles.shelfMeta}>{papers.length} {papers.length === 1 ? 'paper' : 'papers'}</Text>
             </View>
-          );
-        })}
-        {filtering && searched.length === 0 ? <Text style={styles.empty}>No papers match these filters.</Text> : null}
+            {item.key === 'CM' ? (
+              <View style={styles.communityNoteRow}>
+                {library.communityStatus === 'error' ? (
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel="Retry loading community library"
+                    onPress={() => void library.refreshCommunity()}
+                    style={styles.retryButton}
+                  >
+                    <Text style={styles.retryText}>{library.communityMessage}</Text>
+                  </Pressable>
+                ) : (
+                  <Text style={styles.note}>{library.communityMessage}</Text>
+                )}
+                <Pressable accessibilityRole="button" onPress={() => void choosePdf()}>
+                  <Text style={styles.linkInline}>Upload a white paper</Text>
+                </Pressable>
+              </View>
+            ) : null}
+            {papers.length === 0 ? (
+              <Text style={styles.empty}>
+                {library.communityStatus === 'loading'
+                  ? 'Loading…'
+                  : hasQuery
+                    ? 'No community uploads match your search.'
+                    : 'No community uploads yet. Be the first to share one.'}
+              </Text>
+            ) : (
+              <View style={[styles.grid, { gap }]}>
+                {papers.map((paper) => <PaperCard key={paper.id} item={paper} width={coverW} />)}
+              </View>
+            )}
+          </View>
+        ))}
+        {filtering && visibleShelves.length === 0 ? <Text style={styles.empty}>No papers match these filters.</Text> : null}
         <Text style={styles.footer}>
           Metadata comes from the official source for each project. PDFs open from their existing URLs and are saved on this device after you read them. The Community shelf is shared through the public library. PDF rendering by Mozilla PDF.js.
         </Text>
@@ -199,8 +224,11 @@ const styles = StyleSheet.create({
   accent: { color: theme.accent, fontSize: 15 },
   row: { gap: 16, paddingBottom: 8 },
   grid: { flexDirection: 'row', flexWrap: 'wrap' },
-  note: { color: theme.text2, fontSize: 13.5, lineHeight: 19, marginTop: -4, marginBottom: 12 },
-  linkInline: { color: theme.accent2 },
+  communityNoteRow: { marginTop: -4, marginBottom: 12, gap: 4 },
+  note: { color: theme.text2, fontSize: 13.5, lineHeight: 19 },
+  retryButton: { alignSelf: 'flex-start', paddingVertical: 4 },
+  retryText: { color: theme.accent, fontSize: 13.5, lineHeight: 19, fontWeight: '600' },
+  linkInline: { color: theme.accent2, fontSize: 13.5, lineHeight: 19 },
   empty: { color: theme.text2, fontSize: 15, paddingVertical: 8 },
   footer: { color: theme.text3, fontSize: 13, lineHeight: 18, marginTop: 28 },
 });

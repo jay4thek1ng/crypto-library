@@ -1,11 +1,18 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from '@react-native-community/netinfo';
 import { isShelfKey, isTopicKey } from '../data/shelves';
 import type { LibraryItem } from '../types';
 import { asyncKv } from './async-kv';
 import { CATALOG } from './catalog-data';
-import { parseCommunityRows, stripCommunityCovers } from './community';
+import {
+  COMMUNITY_LOADING_MESSAGE,
+  COMMUNITY_ONLINE_MESSAGE,
+  parseCommunityRows,
+  resolveCommunityFailure,
+  stripCommunityCovers,
+} from './community';
 import { COMMUNITY_CACHE_KEY, SUPABASE_URL } from './config';
 import { isValidDeviceId, newDeviceId } from './device';
 import { clearDownloadedFiles, measureDownloads } from './files';
@@ -102,7 +109,7 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
   const [community, setCommunity] = useState<LibraryItem[]>([]);
   const communityRef = useRef<LibraryItem[]>([]);
   const [communityStatus, setCommunityStatus] = useState<CommunityStatus>('loading');
-  const [communityMessage, setCommunityMessage] = useState('Loading community uploads…');
+  const [communityMessage, setCommunityMessage] = useState(COMMUNITY_LOADING_MESSAGE);
   const [cache, setCache] = useState<CacheRecord[]>([]);
 
   const replaceCommunity = useCallback((next: LibraryItem[]) => {
@@ -119,21 +126,26 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const refreshCommunity = useCallback(async () => {
+    setCommunityStatus('loading');
+    setCommunityMessage(COMMUNITY_LOADING_MESSAGE);
     try {
       const { listCommunityPapers } = await import('./supabase');
       const rows = await listCommunityPapers();
       replaceCommunity(parseCommunityRows(rows, SUPABASE_URL));
       setCommunityStatus('online');
-      setCommunityMessage('Shared by app users and public to everyone.');
+      setCommunityMessage(COMMUNITY_ONLINE_MESSAGE);
       await AsyncStorage.setItem(COMMUNITY_CACHE_KEY, JSON.stringify({ at: Date.now(), rows: stripCommunityCovers(rows) }));
     } catch (error) {
-      const network = error instanceof Error && (error.message === 'NETWORK' || error.message.includes('Network'));
-      setCommunityStatus(communityRef.current.length ? 'offline' : 'error');
-      setCommunityMessage(
-        network
-          ? 'Offline · connect to the internet to see community uploads'
-          : "Couldn't load community uploads",
-      );
+      let offline = false;
+      try {
+        const net = await NetInfo.fetch();
+        offline = net.isConnected === false || net.isInternetReachable === false;
+      } catch {
+        offline = false;
+      }
+      const next = resolveCommunityFailure(error, offline);
+      setCommunityStatus(next.status);
+      setCommunityMessage(next.message);
     }
   }, [replaceCommunity]);
 
@@ -150,8 +162,6 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
         const cachedRows = await readCommunityCache();
         if (!cancel && cachedRows) {
           replaceCommunity(parseCommunityRows(cachedRows, SUPABASE_URL));
-          setCommunityStatus('offline');
-          setCommunityMessage('Offline · connect to the internet to see community uploads');
         }
         const records = await measureDownloads().catch(() => []);
         if (!cancel) setCache(records);

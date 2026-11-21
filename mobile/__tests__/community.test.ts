@@ -1,4 +1,12 @@
-import { parseCommunityRow, parseCommunityRows, stripCommunityCovers } from '../src/lib/community';
+import {
+  COMMUNITY_ERROR_MESSAGE,
+  COMMUNITY_OFFLINE_MESSAGE,
+  parseCommunityRow,
+  parseCommunityRows,
+  resolveCommunityFailure,
+  stripCommunityCovers,
+} from '../src/lib/community';
+import { ApiError, sbJSON } from '../src/lib/supabase';
 import { bytesToDeviceId, isValidDeviceId } from '../src/lib/device';
 import {
   friendlyUploadError,
@@ -65,5 +73,50 @@ describe('upload rules', () => {
   it('creates a device id the community API will accept', () => {
     const id = bytesToDeviceId(new Uint8Array(18).fill(7));
     expect(isValidDeviceId(id)).toBe(true);
+  });
+});
+
+describe('community error handling', () => {
+  it('shows Offline only when offline, and unreachable with retry on API/network failures while online', () => {
+    expect(resolveCommunityFailure(new ApiError('Server Error', 500), false)).toEqual({
+      status: 'error',
+      message: COMMUNITY_ERROR_MESSAGE,
+    });
+    expect(resolveCommunityFailure(new ApiError('Server Error', 500), true)).toEqual({
+      status: 'error',
+      message: COMMUNITY_ERROR_MESSAGE,
+    });
+    expect(resolveCommunityFailure(new ApiError('NETWORK', 0), false)).toEqual({
+      status: 'error',
+      message: COMMUNITY_ERROR_MESSAGE,
+    });
+    expect(resolveCommunityFailure(new ApiError('NETWORK', 0), true)).toEqual({
+      status: 'offline',
+      message: COMMUNITY_OFFLINE_MESSAGE,
+    });
+  });
+
+  it('logs a warning with URL and status when Supabase fails', async () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const originalFetch = globalThis.fetch;
+    try {
+      globalThis.fetch = jest.fn().mockResolvedValue({
+        ok: false,
+        status: 500,
+        text: async () => JSON.stringify({ message: 'Internal Error' }),
+      }) as unknown as typeof fetch;
+      await expect(sbJSON('GET', '/rest/v1/papers?limit=5')).rejects.toMatchObject({ status: 500 });
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('/rest/v1/papers?limit=5'));
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('status=500'));
+
+      warnSpy.mockClear();
+      globalThis.fetch = jest.fn().mockRejectedValue(new TypeError('Network request failed')) as unknown as typeof fetch;
+      await expect(sbJSON('GET', '/rest/v1/papers?limit=5')).rejects.toMatchObject({ status: 0 });
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('/rest/v1/papers?limit=5'), expect.any(TypeError));
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('status=0'), expect.any(TypeError));
+    } finally {
+      globalThis.fetch = originalFetch;
+      warnSpy.mockRestore();
+    }
   });
 });
