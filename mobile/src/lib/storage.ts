@@ -32,6 +32,9 @@ export interface PrivatePaper {
   added: number;
 }
 
+export type AppearanceMode = 'system' | 'light' | 'dark';
+export type ReaderThemeMode = 'white' | 'sepia' | 'dark';
+
 export interface LibraryState {
   readingNow: string[];
   want: string[];
@@ -41,10 +44,12 @@ export interface LibraryState {
   privatePapers: PrivatePaper[];
   deviceId: string;
   sort: 'year' | 'title' | 'project';
+  appearance: AppearanceMode;
+  readerTheme: ReaderThemeMode;
 }
 
 export function emptyState(): LibraryState {
-  return { readingNow: [], want: [], bookmarks: [], progress: {}, reported: [], privatePapers: [], deviceId: '', sort: 'year' };
+  return { readingNow: [], want: [], bookmarks: [], progress: {}, reported: [], privatePapers: [], deviceId: '', sort: 'year', appearance: 'light', readerTheme: 'white' };
 }
 
 function stringList(value: unknown, max: number): string[] {
@@ -106,6 +111,8 @@ export function parseState(raw: string | null): LibraryState {
   try {
     const value = JSON.parse(raw) as Partial<LibraryState>;
     const sort = value.sort === 'title' || value.sort === 'project' || value.sort === 'year' ? value.sort : 'year';
+    const appearance: AppearanceMode = value.appearance === 'system' || value.appearance === 'light' || value.appearance === 'dark' ? value.appearance : 'light';
+    const readerTheme: ReaderThemeMode = value.readerTheme === 'white' || value.readerTheme === 'sepia' || value.readerTheme === 'dark' ? value.readerTheme : 'white';
     return {
       readingNow: stringList(value.readingNow, READING_NOW_LIMIT),
       want: stringList(value.want, 500),
@@ -115,6 +122,8 @@ export function parseState(raw: string | null): LibraryState {
       privatePapers: Array.isArray(value.privatePapers) ? value.privatePapers.filter((row) => row && typeof row.id === 'string' && typeof row.title === 'string') : [],
       deviceId: typeof value.deviceId === 'string' ? value.deviceId : '',
       sort,
+      appearance,
+      readerTheme,
     };
   } catch {
     return emptyState();

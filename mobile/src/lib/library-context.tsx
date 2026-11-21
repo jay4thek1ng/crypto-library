@@ -32,7 +32,8 @@ import {
   toggleWant,
   touchReadingNow,
 } from './storage';
-import type { LibraryState, PrivatePaper } from './storage';
+import type { AppearanceMode, LibraryState, PrivatePaper, ReaderThemeMode } from './storage';
+import { AppearanceContext } from '../theme';
 
 export type CommunityStatus = 'loading' | 'online' | 'offline' | 'error';
 
@@ -60,6 +61,10 @@ interface LibraryContextValue {
   noteCached: (id: string, bytes: number, extension?: string) => void;
   clearDownloads: () => Promise<void>;
   addPrivate: (paper: PrivatePaper) => void;
+  appearance: AppearanceMode;
+  setAppearance: (mode: AppearanceMode) => void;
+  readerTheme: ReaderThemeMode;
+  setReaderTheme: (mode: ReaderThemeMode) => void;
   deviceId: string;
 }
 
@@ -219,10 +224,18 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       setCache([]);
     },
     addPrivate: (paper) => commit((prev) => ({ ...prev, privatePapers: [...prev.privatePapers.filter((item) => item.id !== paper.id), paper] })),
+    appearance: state.appearance,
+    setAppearance: (appearance) => commit((prev) => ({ ...prev, appearance })),
+    readerTheme: state.readerTheme,
+    setReaderTheme: (readerTheme) => commit((prev) => ({ ...prev, readerTheme })),
     deviceId: state.deviceId,
   }), [ready, items, state, communityStatus, communityMessage, cache, storageBytes, find, refreshCommunity, commit]);
 
-  return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
+  return (
+    <AppearanceContext.Provider value={state.appearance}>
+      <Ctx.Provider value={value}>{children}</Ctx.Provider>
+    </AppearanceContext.Provider>
+  );
 }
 
 export function useLibrary(): LibraryContextValue {

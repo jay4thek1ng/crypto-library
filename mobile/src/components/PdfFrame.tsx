@@ -1,6 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef, type ComponentType, type Ref } from 'react';
 import { StyleSheet } from 'react-native';
 import WebView from 'react-native-webview';
+import type { ReaderThemeMode } from '../lib/storage';
 import type { PdfFrameHandle, PdfFrameProps } from './pdf-frame';
 
 interface WebViewProps {
@@ -24,7 +25,10 @@ interface WebViewHandle {
 
 const Browser = WebView as unknown as ComponentType<WebViewProps>;
 
-export const PdfFrame = forwardRef<PdfFrameHandle, PdfFrameProps>(function PdfFrame({ uri, onMessage, readAccessUrl }, ref) {
+export const PdfFrame = forwardRef<PdfFrameHandle, PdfFrameProps>(function PdfFrame(
+  { uri, onMessage, readAccessUrl, backgroundColor = '#E9E6E0' },
+  ref,
+) {
   const webRef = useRef<WebViewHandle>(null);
   useImperativeHandle(ref, () => ({
     setPage(page: number) {
@@ -33,12 +37,15 @@ export const PdfFrame = forwardRef<PdfFrameHandle, PdfFrameProps>(function PdfFr
     setZoom(zoom: number) {
       webRef.current?.injectJavaScript(`window.reader && window.reader.setZoom(${zoom}); true;`);
     },
+    setTheme(theme: ReaderThemeMode) {
+      webRef.current?.injectJavaScript(`window.reader && window.reader.setTheme(${JSON.stringify(theme)}); true;`);
+    },
   }));
   return (
     <Browser
       ref={webRef}
       source={{ uri }}
-      style={styles.web}
+      style={[styles.web, { backgroundColor }]}
       originWhitelist={['*']}
       allowFileAccess
       allowUniversalAccessFromFileURLs
@@ -53,5 +60,5 @@ export const PdfFrame = forwardRef<PdfFrameHandle, PdfFrameProps>(function PdfFr
 });
 
 const styles = StyleSheet.create({
-  web: { flex: 1, backgroundColor: '#525659' },
+  web: { flex: 1 },
 });

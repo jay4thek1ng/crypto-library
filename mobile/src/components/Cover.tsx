@@ -1,22 +1,48 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { COVERS } from '../data/covers';
 import { SHELVES } from '../data/shelves';
-import { theme } from '../theme';
+import { SHELF_TINTS, useTheme } from '../theme';
 import type { LibraryItem } from '../types';
 
 export function Cover({ item, width, saved }: { item: LibraryItem; width: number; saved?: boolean }) {
+  const colors = useTheme();
   const shelf = SHELVES[item.shelf];
+  const tint = SHELF_TINTS[item.shelf];
   const bundled = item.cover ? COVERS[item.cover] : undefined;
   const source = item.coverUri ? { uri: item.coverUri } : bundled;
+  const isLight = colors.mode === 'light';
+  const fallbackBg = isLight ? tint.bg : shelf.from;
+  const fallbackTextColor = isLight ? colors.text : colors.white;
+  const fallbackSubColor = isLight ? colors.text2 : colors.white;
+  const marker = item.ticker || (item.project || item.title).trim().slice(0, 1).toUpperCase() || shelf.label;
+
   return (
-    <View style={[styles.cover, { width, height: Math.round(width * 1.5), backgroundColor: shelf.from }]}>
-      {source ? <Image source={source} style={StyleSheet.absoluteFill} resizeMode="cover" accessibilityIgnoresInvertColors /> : (
+    <View
+      style={[
+        styles.cover,
+        {
+          width,
+          height: Math.round(width * 1.5),
+          backgroundColor: fallbackBg,
+          borderColor: source ? colors.line : isLight ? tint.border : colors.line,
+        },
+      ]}
+    >
+      {source ? (
+        <Image source={source} style={StyleSheet.absoluteFill} resizeMode="cover" accessibilityIgnoresInvertColors />
+      ) : (
         <View style={styles.fallback}>
-          <Text style={styles.ticker} numberOfLines={1}>{item.ticker || shelf.label}</Text>
-          <Text style={styles.title} numberOfLines={6}>{item.title}</Text>
+          <View style={styles.markerRow}>
+            <Text style={[styles.ticker, { color: fallbackSubColor }]} numberOfLines={1}>
+              {marker}
+            </Text>
+          </View>
+          <Text style={[styles.title, { color: fallbackTextColor }]} numberOfLines={6}>
+            {item.title}
+          </Text>
         </View>
       )}
-      <View style={styles.spine} />
+      <View style={[styles.spine, { backgroundColor: isLight && !source ? 'rgba(31,31,31,0.08)' : 'rgba(0,0,0,0.22)' }]} />
       {saved || item.origin !== 'catalog' ? (
         <Text style={styles.badge}>{saved ? 'SAVED' : item.origin === 'private' ? 'PRIVATE' : 'COMMUNITY'}</Text>
       ) : null}
@@ -25,17 +51,18 @@ export function Cover({ item, width, saved }: { item: LibraryItem; width: number
 }
 
 const styles = StyleSheet.create({
-  cover: { borderRadius: 4, borderTopRightRadius: 10, borderBottomRightRadius: 10, overflow: 'hidden' },
+  cover: { borderRadius: 6, borderTopRightRadius: 12, borderBottomRightRadius: 12, overflow: 'hidden', borderWidth: StyleSheet.hairlineWidth },
   fallback: { flex: 1, paddingTop: 14, paddingRight: 10, paddingBottom: 12, paddingLeft: 16, justifyContent: 'space-between' },
-  ticker: { color: theme.white, fontSize: 10, fontWeight: '700', letterSpacing: 1.1, textTransform: 'uppercase', opacity: 0.9 },
-  title: { color: theme.white, fontSize: 13, lineHeight: 16, fontWeight: '700' },
-  spine: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 8, backgroundColor: 'rgba(0,0,0,0.28)' },
+  markerRow: { flexDirection: 'row', alignItems: 'center' },
+  ticker: { fontSize: 11, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase' },
+  title: { fontSize: 13.5, lineHeight: 17, fontWeight: '700' },
+  spine: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 8 },
   badge: {
     position: 'absolute',
     top: 6,
     right: 6,
-    color: theme.white,
-    backgroundColor: 'rgba(0,0,0,0.62)',
+    color: '#FFFFFF',
+    backgroundColor: 'rgba(31,31,31,0.84)',
     overflow: 'hidden',
     borderRadius: 999,
     fontSize: 9,

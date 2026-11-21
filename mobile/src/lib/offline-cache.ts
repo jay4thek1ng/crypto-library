@@ -49,8 +49,9 @@ export function resolvePdfSource(localUri: string | null | undefined, remoteUrl:
   return null;
 }
 
-export function buildReaderUrl(readerBase: string, fileUrl: string, page: number): string {
+export function buildReaderUrl(readerBase: string, fileUrl: string, page: number, readerTheme?: string): string {
   const safePage = Number.isInteger(page) && page > 0 ? page : 1;
   const join = readerBase.includes('?') ? '&' : '?';
-  return `${readerBase}${join}file=${encodeURIComponent(fileUrl)}&page=${safePage}`;
+  const themePart = readerTheme ? `&theme=${encodeURIComponent(readerTheme)}` : '';
+  return `${readerBase}${join}file=${encodeURIComponent(fileUrl)}&page=${safePage}${themePart}`;
 }

@@ -21,12 +21,13 @@ import {
   storageObjectName,
   titleFromFileName,
 } from '../src/lib/upload';
-import { theme } from '../src/theme';
+import { useTheme } from '../src/theme';
 
 export default function UploadScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const library = useLibrary();
+  const colors = useTheme();
   const pending = getPendingUpload();
   const [title, setTitle] = useState(pending ? titleFromFileName(pending.name) : '');
   const [project, setProject] = useState('');
@@ -114,24 +115,32 @@ export default function UploadScreen() {
   }
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={{ paddingTop: insets.top + 8, paddingHorizontal: 20, paddingBottom: insets.bottom + 40 }} keyboardShouldPersistTaps="handled">
-      <Text style={styles.back} onPress={() => router.back()} accessibilityRole="button">‹ Library</Text>
-      <Text style={styles.title}>Upload white paper</Text>
-      <Text style={styles.file}>{pending ? `${pending.name} · ${pending.size ? formatBytes(pending.size) : 'size unknown'}` : 'No PDF selected.'}</Text>
+    <ScrollView
+      style={[styles.screen, { backgroundColor: colors.bg }]}
+      contentContainerStyle={{ paddingTop: insets.top + 8, paddingHorizontal: 20, paddingBottom: insets.bottom + 40 }}
+      keyboardShouldPersistTaps="handled"
+    >
+      <Text style={[styles.back, { color: colors.accent2 }]} onPress={() => router.back()} accessibilityRole="button">‹ Library</Text>
+      <Text style={[styles.title, { color: colors.text }]}>Upload white paper</Text>
+      <Text style={[styles.file, { color: colors.text2 }]}>{pending ? `${pending.name} · ${pending.size ? formatBytes(pending.size) : 'size unknown'}` : 'No PDF selected.'}</Text>
       <Choice label="Share with everyone" detail="Adds it to the public Community shelf." selected={visibility === 'public'} onPress={() => setVisibility('public')} />
       <Choice label="Only on this device" detail="Private copy in My Uploads. Nothing leaves your phone." selected={visibility === 'private'} onPress={() => setVisibility('private')} />
       <Field label="Title" value={title} onChangeText={setTitle} />
       <Field label="Project / blockchain" value={project} onChangeText={setProject} placeholder="e.g. Ethereum" />
       <Field label="Year" value={year} onChangeText={setYear} placeholder="e.g. 2024" keyboardType="number-pad" />
-      <Text style={styles.label}>Shelf</Text>
+      <Text style={[styles.label, { color: colors.text2 }]}>Shelf</Text>
       <View style={styles.shelves}>
         <Choice label="Other / no specific shelf" selected={shelf === 'OT'} onPress={() => setShelf('OT')} />
         {TOPICS.map((item) => <Choice key={item.key} label={item.label} selected={shelf === item.key} onPress={() => { if (isTopicKey(item.key)) setShelf(item.key); }} />)}
       </View>
       <Field label="Description (optional)" value={notes} onChangeText={setNotes} multiline />
-      {visibility === 'public' ? <Text style={styles.note}>Uploads are public: anyone can read and download them. Only share papers that are already public or that you have the right to share. Max 25 MB. The owner removes reported or inappropriate uploads.</Text> : null}
+      {visibility === 'public' ? (
+        <Text style={[styles.note, { color: colors.text, backgroundColor: colors.accentSoft, borderColor: colors.line }]}>
+          Uploads are public: anyone can read and download them. Only share papers that are already public or that you have the right to share. Max 25 MB. The owner removes reported or inappropriate uploads.
+        </Text>
+      ) : null}
       <Button label={busy ? 'Working…' : visibility === 'public' ? 'Upload' : 'Add to My Uploads'} kind="primary" disabled={busy || !pending} onPress={() => void submit()} />
-      <Text style={styles.status} accessibilityRole="text">{status}</Text>
+      <Text style={[styles.status, { color: colors.text2 }]} accessibilityRole="text">{status}</Text>
     </ScrollView>
   );
 }
@@ -148,37 +157,62 @@ async function readHeader(uri: string, webFile?: Blob): Promise<string> {
 }
 
 function Field({ label, value, onChangeText, placeholder, keyboardType, multiline }: { label: string; value: string; onChangeText: (value: string) => void; placeholder?: string; keyboardType?: 'default' | 'number-pad'; multiline?: boolean }) {
+  const colors = useTheme();
   return (
     <View style={styles.field}>
-      <Text style={styles.label}>{label}</Text>
-      <TextInput value={value} onChangeText={onChangeText} placeholder={placeholder} placeholderTextColor={theme.text3} keyboardType={keyboardType} multiline={multiline} style={[styles.input, multiline && styles.area]} />
+      <Text style={[styles.label, { color: colors.text2 }]}>{label}</Text>
+      <TextInput
+        value={value}
+        onChangeText={onChangeText}
+        placeholder={placeholder}
+        placeholderTextColor={colors.text3}
+        selectionColor={colors.accent}
+        keyboardAppearance={colors.mode}
+        keyboardType={keyboardType}
+        multiline={multiline}
+        style={[
+          styles.input,
+          { backgroundColor: colors.paper, color: colors.text, borderColor: colors.pillBorder },
+          multiline && styles.area,
+        ]}
+      />
     </View>
   );
 }
 
 function Choice({ label, detail, selected, onPress }: { label: string; detail?: string; selected: boolean; onPress: () => void }) {
+  const colors = useTheme();
   return (
-    <Pressable accessibilityRole="button" onPress={onPress} style={[styles.choice, selected && styles.choiceOn]}>
-      <Text style={styles.choiceLabel}>{selected ? '● ' : '○ '}{label}</Text>
-      {detail ? <Text style={styles.choiceDetail}>{detail}</Text> : null}
+    <Pressable
+      accessibilityRole="button"
+      onPress={onPress}
+      style={[
+        styles.choice,
+        {
+          backgroundColor: selected ? colors.paper : colors.fill,
+          borderColor: selected ? colors.accent : colors.pillBorder,
+        },
+      ]}
+    >
+      <Text style={[styles.choiceLabel, { color: colors.text }]}>{selected ? '● ' : '○ '}{label}</Text>
+      {detail ? <Text style={[styles.choiceDetail, { color: colors.text2 }]}>{detail}</Text> : null}
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: theme.bg },
-  back: { color: theme.accent2, fontSize: 17, paddingVertical: 8 },
-  title: { color: theme.text, fontSize: 28, fontWeight: '700', marginBottom: 8 },
-  file: { color: theme.text2, marginBottom: 12 },
+  screen: { flex: 1 },
+  back: { fontSize: 17, fontWeight: '600', paddingVertical: 8 },
+  title: { fontSize: 28, fontWeight: '700', marginBottom: 8 },
+  file: { marginBottom: 12 },
   field: { marginBottom: 10 },
-  label: { color: theme.text2, fontSize: 13, marginBottom: 4 },
-  input: { backgroundColor: theme.fill, color: theme.text, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, fontSize: 16 },
+  label: { fontSize: 13, marginBottom: 4, fontWeight: '600' },
+  input: { borderRadius: 12, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 10, fontSize: 16 },
   area: { minHeight: 80, textAlignVertical: 'top' },
   shelves: { gap: 8, marginBottom: 12 },
-  choice: { backgroundColor: theme.fill, borderRadius: 12, padding: 12, marginBottom: 8 },
-  choiceOn: { backgroundColor: theme.paper },
-  choiceLabel: { color: theme.text, fontSize: 15, fontWeight: '600' },
-  choiceDetail: { color: theme.text2, fontSize: 13, marginTop: 3 },
-  note: { color: theme.text, backgroundColor: 'rgba(100,210,255,0.12)', borderRadius: 10, padding: 12, marginBottom: 12, lineHeight: 19 },
-  status: { color: theme.text2, marginTop: 12, minHeight: 20 },
+  choice: { borderRadius: 12, borderWidth: 1, padding: 12, marginBottom: 8 },
+  choiceLabel: { fontSize: 15, fontWeight: '600' },
+  choiceDetail: { fontSize: 13, marginTop: 3 },
+  note: { borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, padding: 12, marginBottom: 12, lineHeight: 19 },
+  status: { marginTop: 12, minHeight: 20 },
 });

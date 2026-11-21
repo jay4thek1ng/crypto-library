@@ -70,4 +70,17 @@ describe('library storage', () => {
     expect(parseState('not json').readingNow).toEqual([]);
     expect(parseState(null).bookmarks).toEqual([]);
   });
+
+  it('persists appearance and readerTheme with light/white defaults', () => {
+    expect(emptyState().appearance).toBe('light');
+    expect(emptyState().readerTheme).toBe('white');
+    const saved = JSON.stringify({ ...emptyState(), appearance: 'dark', readerTheme: 'sepia' });
+    const parsed = parseState(saved);
+    expect(parsed.appearance).toBe('dark');
+    expect(parsed.readerTheme).toBe('sepia');
+    const invalid = parseState(JSON.stringify({ appearance: 'neon', readerTheme: 'blue' }));
+    expect(invalid.appearance).toBe('light');
+    expect(invalid.readerTheme).toBe('white');
+  });
+
 });

@@ -6,7 +6,7 @@
     "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
@@ -15,7 +15,7 @@
     },
     "android": {
       "package": "io.github.jay4thek1ng.cryptolibrary",
-      "versionCode": 5,
+      "versionCode": 6,
       "adaptiveIcon": {
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
@@ -33,11 +33,27 @@
       "expo-asset",
       "expo-font",
       [
+        "expo-status-bar",
+        {
+          "style": "dark"
+        }
+      ],
+      [
+        "expo-navigation-bar",
+        {
+          "style": "dark",
+          "enforceContrast": false
+        }
+      ],
+      [
         "expo-splash-screen",
         {
-          "backgroundColor": "#305AFE",
+          "backgroundColor": "#FAF7F2",
           "image": "./assets/splash-icon.png",
-          "imageWidth": 220
+          "imageWidth": 220,
+          "dark": {
+            "backgroundColor": "#000000"
+          }
         }
       ]
     ],
@@ -54,6 +70,7 @@
         "projectId": "9c5c4608-5a61-42d1-8dba-109597965f7d"
       }
     },
-    "owner": "jordan-management-group"
+    "owner": "jordan-management-group",
+    "backgroundColor": "#FAF7F2"
   }
 }

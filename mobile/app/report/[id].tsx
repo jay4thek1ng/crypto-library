@@ -6,7 +6,7 @@ import { Button } from '../../src/components/Button';
 import { useLibrary } from '../../src/lib/library-context';
 import { ApiError, sendReport } from '../../src/lib/supabase';
 import { friendlyReportError } from '../../src/lib/upload';
-import { theme } from '../../src/theme';
+import { useTheme } from '../../src/theme';
 
 function param(value: string | string[] | undefined): string {
   return Array.isArray(value) ? value[0] ?? '' : value ?? '';
@@ -17,6 +17,7 @@ export default function ReportScreen() {
   const insets = useSafeAreaInsets();
   const id = param(useLocalSearchParams<{ id: string }>().id);
   const library = useLibrary();
+  const colors = useTheme();
   const item = library.find(id);
   const [reason, setReason] = useState('');
   const [status, setStatus] = useState('');
@@ -49,30 +50,40 @@ export default function ReportScreen() {
   }
 
   return (
-    <View style={[styles.screen, { paddingTop: insets.top + 8, paddingHorizontal: 20 }]}>
-      <Text style={styles.back} onPress={() => router.back()} accessibilityRole="button">‹ Back</Text>
-      <Text style={styles.title}>{done ? 'Report sent' : 'Report this upload'}</Text>
-      {item ? <Text style={styles.paper}>“{item.title}”</Text> : <Text style={styles.paper}>This paper is no longer in the library.</Text>}
-      {done ? <Text style={styles.body}>{done}</Text> : (
+    <View style={[styles.screen, { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 24, paddingHorizontal: 20, backgroundColor: colors.bg }]}>
+      <Text style={[styles.back, { color: colors.accent2 }]} onPress={() => router.back()} accessibilityRole="button">‹ Back</Text>
+      <Text style={[styles.title, { color: colors.text }]}>{done ? 'Report sent' : 'Report this upload'}</Text>
+      {item ? <Text style={[styles.paper, { color: colors.text2 }]}>“{item.title}”</Text> : <Text style={[styles.paper, { color: colors.text2 }]}>This paper is no longer in the library.</Text>}
+      {done ? <Text style={[styles.body, { color: colors.text }]}>{done}</Text> : (
         <>
-          <Text style={styles.body}>Report spam, offensive content, malware, copyright problems or anything that is not a crypto white paper. Uploads with several reports are hidden automatically and the owner reviews them.</Text>
-          <Text style={styles.label}>Reason (optional)</Text>
-          <TextInput value={reason} onChangeText={setReason} multiline maxLength={500} placeholder="What is wrong with it?" placeholderTextColor={theme.text3} style={styles.input} />
+          <Text style={[styles.body, { color: colors.text }]}>Report spam, offensive content, malware, copyright problems or anything that is not a crypto white paper. Uploads with several reports are hidden automatically and the owner reviews them.</Text>
+          <Text style={[styles.label, { color: colors.text2 }]}>Reason (optional)</Text>
+          <TextInput
+            value={reason}
+            onChangeText={setReason}
+            multiline
+            maxLength={500}
+            placeholder="What is wrong with it?"
+            placeholderTextColor={colors.text3}
+            selectionColor={colors.accent}
+            keyboardAppearance={colors.mode}
+            style={[styles.input, { backgroundColor: colors.paper, color: colors.text, borderColor: colors.pillBorder }]}
+          />
           <Button label={busy ? 'Sending…' : 'Send report'} kind="danger" disabled={busy || !item?.communityId} onPress={() => void submit()} />
         </>
       )}
-      <Text style={styles.status}>{status}</Text>
+      <Text style={[styles.status, { color: colors.text2 }]}>{status}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: theme.bg },
-  back: { color: theme.accent2, fontSize: 17, paddingVertical: 8 },
-  title: { color: theme.text, fontSize: 28, fontWeight: '700', marginBottom: 8 },
-  paper: { color: theme.text2, marginBottom: 12 },
-  body: { color: theme.text, fontSize: 15, lineHeight: 21, marginBottom: 14 },
-  label: { color: theme.text2, fontSize: 13, marginBottom: 4 },
-  input: { backgroundColor: theme.fill, color: theme.text, borderRadius: 10, minHeight: 90, padding: 12, fontSize: 16, textAlignVertical: 'top', marginBottom: 12 },
-  status: { color: theme.text2, marginTop: 12 },
+  screen: { flex: 1 },
+  back: { fontSize: 17, fontWeight: '600', paddingVertical: 8 },
+  title: { fontSize: 28, fontWeight: '700', marginBottom: 8 },
+  paper: { marginBottom: 12 },
+  body: { fontSize: 15, lineHeight: 21, marginBottom: 14 },
+  label: { fontSize: 13, fontWeight: '600', marginBottom: 4 },
+  input: { borderRadius: 12, borderWidth: 1, minHeight: 90, padding: 12, fontSize: 16, textAlignVertical: 'top', marginBottom: 12 },
+  status: { marginTop: 12 },
 });

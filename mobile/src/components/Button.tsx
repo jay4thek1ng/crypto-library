@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, type StyleProp, type ViewStyle } from 'react-native';
-import { theme } from '../theme';
+import { useTheme } from '../theme';
 
 export function Button({
   label,
@@ -14,14 +14,20 @@ export function Button({
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
 }) {
-  const backgroundColor = kind === 'primary' ? theme.accent : kind === 'danger' ? theme.fill : theme.fill;
-  const color = kind === 'primary' ? theme.white : kind === 'danger' ? theme.danger : theme.text;
+  const colors = useTheme();
+  const backgroundColor = kind === 'primary' ? colors.accent : colors.fill;
+  const color = kind === 'primary' ? colors.accentOnFill : kind === 'danger' ? colors.danger : colors.text;
+  const borderColor = kind === 'primary' ? colors.accent : colors.pillBorder;
   return (
     <Pressable
       accessibilityRole="button"
       disabled={disabled}
       onPress={onPress}
-      style={[styles.button, { backgroundColor, opacity: disabled ? 0.55 : 1 }, style]}
+      style={[
+        styles.button,
+        { backgroundColor, borderColor, borderWidth: kind === 'primary' ? 0 : 1, opacity: disabled ? 0.55 : 1 },
+        style,
+      ]}
     >
       <Text style={[styles.label, { color }]}>{label}</Text>
     </Pressable>
