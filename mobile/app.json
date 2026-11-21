@@ -1,0 +1,76 @@
+{
+  "expo": {
+    "name": "Crypto White Paper Digital Book",
+    "slug": "crypto-white-paper-digital-book",
+    "scheme": "cryptolibrary",
+    "version": "2.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "io.github.jay4thek1ng.cryptolibrary",
+      "buildNumber": "3"
+    },
+    "android": {
+      "package": "io.github.jay4thek1ng.cryptolibrary",
+      "versionCode": 6,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-asset",
+      "expo-font",
+      [
+        "expo-status-bar",
+        {
+          "style": "dark"
+        }
+      ],
+      [
+        "expo-navigation-bar",
+        {
+          "style": "dark",
+          "enforceContrast": false
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#FAF7F2",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 220,
+          "dark": {
+            "backgroundColor": "#000000"
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": false
+    },
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "9c5c4608-5a61-42d1-8dba-109597965f7d"
+      }
+    },
+    "owner": "jordan-management-group",
+    "backgroundColor": "#FAF7F2"
+  }
+}

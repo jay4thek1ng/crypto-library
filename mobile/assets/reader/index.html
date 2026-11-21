@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="white">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Paper</title>
+<script>
+  (function () {
+    try {
+      var t = new URLSearchParams(location.search).get('theme');
+      if (t === 'white' || t === 'sepia' || t === 'dark') {
+        document.documentElement.dataset.theme = t;
+      }
+    } catch (e) {}
+  })();
+</script>
+<style>
+  :root, :root[data-theme="white"] {
+    --canvas: #E9E6E0;
+    --page: #FFFFFF;
+    --ink: #1F1F1F;
+    --status-bg: rgba(255, 255, 255, 0.94);
+    --status-fg: #1F1F1F;
+    --canvas-filter: none;
+    --canvas-blend: normal;
+  }
+  :root[data-theme="sepia"] {
+    --canvas: #E5DAC3;
+    --page: #FBF4E4;
+    --ink: #2B2216;
+    --status-bg: rgba(251, 244, 228, 0.95);
+    --status-fg: #2B2216;
+    --canvas-filter: none;
+    --canvas-blend: multiply;
+  }
+  :root[data-theme="dark"] {
+    --canvas: #141416;
+    --page: #1C1C1E;
+    --ink: #F2F2F7;
+    --status-bg: rgba(28, 28, 30, 0.92);
+    --status-fg: #F2F2F7;
+    --canvas-filter: invert(0.89) hue-rotate(180deg) contrast(0.92);
+    --canvas-blend: normal;
+  }
+  html, body { margin: 0; background: var(--canvas); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; overflow-x: auto; touch-action: pan-x pan-y; -webkit-overflow-scrolling: touch; }
+  #status { display: none; position: fixed; left: 50%; top: 42%; transform: translate(-50%, -50%); max-width: 86%; background: var(--status-bg); color: var(--status-fg); padding: 14px 18px; border-radius: 12px; text-align: center; line-height: 1.4; z-index: 2; box-shadow: 0 4px 16px rgba(0,0,0,.16); }
+  #pages { display: flex; flex-direction: column; align-items: center; min-width: 100%; width: max-content; padding: 8px 8px 32px; box-sizing: border-box; }
+  .pg { position: relative; margin: 0 auto 10px; background: var(--page); box-shadow: 0 1px 4px rgba(0,0,0,.18); }
+  .pg canvas { display: block; width: 100%; height: 100%; filter: var(--canvas-filter); mix-blend-mode: var(--canvas-blend); }
+</style>
+</head>
+<body>
+<div id="status">Opening…</div>
+<div id="pages"></div>
+<script type="module">
+  const statusEl = document.getElementById('status');
+  const pagesEl = document.getElementById('pages');
+  let pdfDoc = null;
+  let loadingTask = null;
+  let renderToken = 0;
+  let zoom = 1;
+  let page = 1;
+  let pageCount = 0;
+  let placeholders = [];
+  let observer = null;
+
+  function applyTheme(next) {
+    if (next === 'white' || next === 'sepia' || next === 'dark') {
+      document.documentElement.dataset.theme = next;
+    }
+  }
+
+  function post(msg) {
+    const data = JSON.stringify(msg);
+    try {
+      if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) window.ReactNativeWebView.postMessage(data);
+      else if (window.parent && window.parent !== window) window.parent.postMessage(data, '*');
+    } catch (e) {}
+  }
+
+  function status(text) {
+    statusEl.textContent = text || '';
+    statusEl.style.display = text ? 'block' : 'none';
+  }
+
+  function releasePage(pg) {
+    if (pg.canvas) {
+      pg.canvas.width = 0;
+      pg.canvas.height = 0;
+      pg.canvas.remove();
+      pg.canvas = null;
+    }
+    pg.scale = 0;
+  }
+
+  async function renderPage(pg, scale, dpr, my) {
+    if (!pdfDoc || pg.scale === scale) return;
+    const want = scale;
+    pg.scale = want;
+    try {
+      const pdfPage = await pdfDoc.getPage(pg.n);
+      if (my !== renderToken || pg.scale !== want) return;
+      const viewport = pdfPage.getViewport({ scale: want * dpr });
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.floor(viewport.width);
+      canvas.height = Math.floor(viewport.height);
+      const ctx = canvas.getContext('2d', { alpha: false });
+      await pdfPage.render({ canvasContext: ctx, viewport: viewport, canvas: canvas }).promise;
+      if (my !== renderToken || pg.scale !== want) return;
+      const css = pdfPage.getViewport({ scale: want });
+      pg.el.style.width = Math.floor(css.width) + 'px';
+      pg.el.style.height = Math.floor(css.height) + 'px';
+      pg.el.replaceChildren(canvas);
+      pg.canvas = canvas;
+      if (document.body.dataset.ready !== '1') {
+        document.body.dataset.ready = '1';
+        status('');
+      }
+    } catch (e) {
+      if (pg.scale === want) pg.scale = 0;
+    }
+  }
+
+  async function buildPlaceholders(my) {
+    if (!pdfDoc) return;
+    if (observer) { observer.disconnect(); observer = null; }
+    const first = await pdfDoc.getPage(1);
+    if (my !== renderToken) return;
+    const base = first.getViewport({ scale: 1 });
+    const width = Math.max(120, document.documentElement.clientWidth - 16);
+    const scale = (width / base.width) * zoom;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    pagesEl.replaceChildren();
+    placeholders = [];
+    for (let n = 1; n <= pageCount; n++) {
+      const el = document.createElement('div');
+      el.className = 'pg';
+      el.id = 'p' + n;
+      el.dataset.n = String(n);
+      el.style.width = Math.floor(base.width * scale) + 'px';
+      el.style.height = Math.floor(base.height * scale) + 'px';
+      pagesEl.appendChild(el);
+      placeholders.push({ n: n, el: el, scale: 0, canvas: null });
+    }
+    observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        const n = Number(entry.target.dataset.n);
+        const pg = placeholders[n - 1];
+        if (!pg) return;
+        if (entry.isIntersecting) renderPage(pg, scale, dpr, my);
+        else releasePage(pg);
+      });
+    }, { root: null, rootMargin: '1000px 0px' });
+    placeholders.forEach(function (pg) { observer.observe(pg.el); });
+    requestAnimationFrame(function () {
+      const target = document.getElementById('p' + page);
+      if (target) window.scrollTo(0, Math.max(0, target.offsetTop - 8));
+    });
+  }
+
+  async function openFile(file, startPage) {
+    const my = ++renderToken;
+    if (observer) { observer.disconnect(); observer = null; }
+    if (loadingTask) { try { await loadingTask.destroy(); } catch (e) {} loadingTask = null; }
+    pdfDoc = null;
+    pagesEl.replaceChildren();
+    placeholders = [];
+    document.body.dataset.ready = '';
+    status('Opening…');
+    if (!file) {
+      status('No PDF to open.');
+      document.body.dataset.ready = 'error';
+      post({ type: 'error', message: 'Missing PDF' });
+      return;
+    }
+    try {
+      const pdfjs = await import('./pdf.min.mjs');
+      pdfjs.GlobalWorkerOptions.workerSrc = new URL('./pdf.worker.min.mjs', import.meta.url).href;
+      const local = file.indexOf('file:') === 0 || file.indexOf('content:') === 0;
+      loadingTask = pdfjs.getDocument({
+        url: file,
+        cMapUrl: new URL('./cmaps/', import.meta.url).href,
+        cMapPacked: true,
+        standardFontDataUrl: new URL('./standard_fonts/', import.meta.url).href,
+        disableRange: local,
+        disableStream: local
+      });
+      const doc = await loadingTask.promise;
+      if (my !== renderToken) return;
+      pdfDoc = doc;
+      pageCount = doc.numPages;
+      page = Math.min(pageCount, Math.max(1, startPage || 1));
+      await buildPlaceholders(my);
+      if (my !== renderToken) return;
+      post({ type: 'ready', pages: pageCount });
+      post({ type: 'page', page: page, pages: pageCount });
+      post({ type: 'zoom', zoom: zoom });
+    } catch (err) {
+      if (my !== renderToken) return;
+      const message = (err && err.message) || String(err);
+      status("Couldn't open this PDF. " + message);
+      document.body.dataset.ready = 'error';
+      post({ type: 'error', message: message });
+    }
+  }
+
+  let scrollTick = 0;
+  window.addEventListener('scroll', function () {
+    if (scrollTick) return;
+    scrollTick = requestAnimationFrame(function () {
+      scrollTick = 0;
+      if (!placeholders.length) return;
+      const mid = window.scrollY + 64;
+      let cur = 1;
+      for (let i = 0; i < placeholders.length; i++) {
+        if (placeholders[i].el.offsetTop <= mid) cur = placeholders[i].n;
+        else break;
+      }
+      if (cur !== page) {
+        page = cur;
+        post({ type: 'page', page: page, pages: pageCount });
+      }
+    });
+  }, { passive: true });
+
+  let resizeTick = 0;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTick);
+    resizeTick = setTimeout(function () {
+      if (pdfDoc) buildPlaceholders(renderToken);
+    }, 150);
+  });
+
+  window.reader = {
+    configure: function (opts) {
+      opts = opts || {};
+      if (opts.theme) applyTheme(opts.theme);
+      zoom = Math.min(3.5, Math.max(0.6, Number(opts.zoom) || 1));
+      return openFile(opts.file || '', Number(opts.page) || 1);
+    },
+    setTheme: function (next) {
+      applyTheme(next);
+    },
+    setPage: function (n) {
+      if (!pageCount) return;
+      n = Math.min(pageCount, Math.max(1, n | 0));
+      page = n;
+      const el = document.getElementById('p' + n);
+      if (el) window.scrollTo(window.scrollX, Math.max(0, el.offsetTop - 8));
+      post({ type: 'page', page: page, pages: pageCount });
+    },
+    setZoom: function (next) {
+      const value = Math.min(3.5, Math.max(0.6, Number(next) || 1));
+      if (Math.abs(value - zoom) < 0.01) {
+        post({ type: 'zoom', zoom: zoom });
+        return;
+      }
+      zoom = value;
+      const keep = page;
+      buildPlaceholders(++renderToken).then(function () {
+        page = keep;
+        const el = document.getElementById('p' + keep);
+        if (el) window.scrollTo(value <= 1 ? 0 : window.scrollX, Math.max(0, el.offsetTop - 8));
+        post({ type: 'zoom', zoom: zoom });
+      });
+    }
+  };
+
+  const params = new URLSearchParams(location.search);
+  applyTheme(params.get('theme'));
+  post({ type: 'booted' });
+  const initialFile = params.get('file') || '';
+  if (initialFile) openFile(initialFile, Number(params.get('page') || '1'));
+  else status('Opening…');
+</script>
+</body>
+</html>
